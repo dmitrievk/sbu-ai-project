@@ -21,9 +21,12 @@ class Feature:
     def translate_email(self, email):
         id, label, words = email
         rv = dict()
+        for word in self.features:
+            rv[word] = 0
         for word, count in words.items():
-            if count > 0 and word in self.features:
-                rv[word] = 0
+            if word in self.features:
+                if count > 0:
+                    rv[word] = 1
         return rv, label
 
     def translate_email_data(self, email_data: EmailData):

@@ -38,7 +38,7 @@ class NaiveBayesian:
 
     def get_p_label_feature_value(self, label, feature_name, feature_value):
         if (label, feature_name) not in self.count_label_feature:
-            return SMOOTH/10
+            assert False
         return self.smooth_ratio(self.count_label_feature[(label, feature_name)], feature_value)
 
     def test(self, X: dict):

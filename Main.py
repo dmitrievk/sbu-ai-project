@@ -37,7 +37,8 @@ def main():
     precession = test(naive_bayesian, test_data_set)
     print(precession)
 
-    print(naive_bayesian.count_label_feature)
+    #print(naive_bayesian.count_label_feature)
+    #print(len(naive_bayesian.features))
 
 
 if __name__ == '__main__':
