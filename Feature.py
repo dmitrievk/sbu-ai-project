@@ -4,7 +4,10 @@ from EmailData import EmailData
 from DataSet import DataSet
 
 from collections import defaultdict
+from math import ceil, log, log10
 
+
+LOG_BASE = 2
 
 class Feature:
     def __init__(self):
@@ -13,12 +16,15 @@ class Feature:
         pass
 
     def learn(self, email_data: EmailData):
+        word_max_occur = defaultdict(int)
         for id, label, words in email_data.emails:
             self.labels.add(label)
-            for word in words:
-                self.features[word].add(0)
-                self.features[word].add(1)
-                self.features[word].add(2)
+            for word, count in words.items():
+                word_max_occur[word] = max(word_max_occur[word], count)
+        for word, count in word_max_occur.items():
+            most = ceil(log(count, LOG_BASE)) + 1
+            for _ in range(most + 1):
+                self.features[word].add(_)
 
     def translate_email(self, email):
         _, label, words = email
@@ -28,10 +34,7 @@ class Feature:
         for word, count in words.items():
             if word in self.features:
                 if count > 0:
-                    if count <= 3:
-                        xs[word] = 1
-                    else:
-                        xs[word] = 2
+                    xs[word] = ceil(log(count, LOG_BASE)) + 1
         return xs, label
 
     def translate_email_data(self, email_data: EmailData):

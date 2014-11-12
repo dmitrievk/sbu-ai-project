@@ -63,6 +63,8 @@ def main():
     feature.learn(train_email_data)
     train_data_set = feature.translate_email_data(train_email_data)
 
+    #print(feature.features)
+
     naive_bayesian = NaiveBayesian()
     naive_bayesian.learn(feature, train_data_set)
 
@@ -70,6 +72,9 @@ def main():
     test_email_data.load_from_file('data/test')
     test_data_set = feature.translate_email_data(test_email_data)
 
+    print('# Training set')
+    test(naive_bayesian, train_data_set)
+    print('# Testing set')
     test(naive_bayesian, test_data_set)
 
 
