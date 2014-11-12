@@ -29,6 +29,7 @@ def main():
     #print(train_data_set)
     naive_bayesian = NaiveBayesian()
     naive_bayesian.learn(feature, train_data_set)
+    naive_bayesian.feature_selection()
 
     test_email_data = EmailData()
     test_email_data.load_from_file('data/test')
