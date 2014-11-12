@@ -6,7 +6,7 @@ from collections import defaultdict
 
 from math import log
 
-SMOOTH = 0.0
+SMOOTH = 0.1
 
 
 class NaiveBayesian:
@@ -18,12 +18,14 @@ class NaiveBayesian:
         self.labels = feature.labels
 
         self.count_label = defaultdict(int)
-        self.count_label_feature = defaultdict(defaultdict(defaultdict(int)))
+        self.count_label_feature = {}
 
         for X, label in data_set:
             self.count_label[label] += 1
-            for feature_name, feature_value in X:
-                self.count_label_feature[label][feature_name][feature_value] += 1
+            for feature_name, feature_value in X.items():
+                if (label, feature_name) not in self.count_label_feature:
+                    self.count_label_feature[(label, feature_name)] = defaultdict(int)
+                self.count_label_feature[(label, feature_name)][feature_value] += 1
 
     def get_p_label(self, label):
         return 1.0 * self.count_label[label] / sum(self.count_label.values())
@@ -35,22 +37,21 @@ class NaiveBayesian:
         return (single + SMOOTH) / (all + num * SMOOTH)
 
     def get_p_label_feature_value(self, label, feature_name, feature_value):
-        if label not in self.count_label_feature:
-            assert False
-        if feature_name not in self.count_label_feature[label]:
-            assert False
-        return self.smooth_ratio(self.count_label_feature[label][feature_name], feature_value)
+        if (label, feature_name) not in self.count_label_feature:
+            return SMOOTH/10
+        return self.smooth_ratio(self.count_label_feature[(label, feature_name)], feature_value)
 
     def test(self, X: dict):
         rv_label = {}
         for label in self.labels:
             v = log(self.get_p_label(label))
-            for feature_name, feature_value in X:
-                v += log(self.get_p_label_feature_value(label, feature_name, feature_value))
+            for feature_name, feature_value in X.items():
+                p = self.get_p_label_feature_value(label, feature_name, feature_value)
+                v += log(p)
             rv_label[label] = v
 
         max_rv = max(rv_label.values())
-        for label, rv in rv_label:
+        for label, rv in rv_label.items():
             if rv == max_rv:
                 return label
         assert False
