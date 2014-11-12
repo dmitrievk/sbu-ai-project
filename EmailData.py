@@ -1,7 +1,7 @@
 __author__ = 'tian'
 
 
-class Email:
+class EmailData:
     def __init__(self):
         self.emails = []  # list of tuple(a,b,c) where a is id, b is label and c is dict
 
@@ -15,10 +15,10 @@ class Email:
                 continue
             i = tokens[0]
             label = tokens[1]
-            d = dict()
+            words = dict()
             for i in range(2, len(tokens), 2):
-                d[tokens[i]] = int(tokens[i + 1])
-            self.emails.append((i, label, d))
+                words[tokens[i]] = int(tokens[i + 1])
+            self.emails.append((i, label, words))
 
 
 
