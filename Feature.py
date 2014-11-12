@@ -1,6 +1,7 @@
 __author__ = 'tian'
 
 from EmailData import EmailData
+from DataSet import DataSet
 
 from collections import defaultdict
 
@@ -17,21 +18,25 @@ class Feature:
             for word in words:
                 self.features[word].add(0)
                 self.features[word].add(1)
+                self.features[word].add(2)
 
     def translate_email(self, email):
-        id, label, words = email
-        rv = dict()
+        _, label, words = email
+        xs = dict()
         for word in self.features:
-            rv[word] = 0
+            xs[word] = 0
         for word, count in words.items():
             if word in self.features:
                 if count > 0:
-                    rv[word] = 1
-        return rv, label
+                    if count <= 3:
+                        xs[word] = 1
+                    else:
+                        xs[word] = 2
+        return xs, label
 
     def translate_email_data(self, email_data: EmailData):
-        rv = []
+        rv = DataSet()
         for email in email_data.emails:
-            rv.append(self.translate_email(email))
+            rv.add_data(self.translate_email(email))
         return rv
 
